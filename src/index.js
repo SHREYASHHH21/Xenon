@@ -1,8 +1,18 @@
 import "dotenv/config";
 
 import ConnectDatabase from "./db/mongoConnect.js";
+import { app } from "./app.js";
 
 ConnectDatabase()
+.then(()=>{
+    app.listen(process.env.PORT,()=>{
+        console.log(`Server started at port ${process.env.PORT}`)
+    })
+})
+.catch((err)=>{
+    console.log(`Mongodb connection error ${err}`)
+})
+
 
 
 
