@@ -1,11 +1,10 @@
 import "dotenv/config";
-
 import ConnectDatabase from "./db/mongoConnect.js";
-import { app } from "./app.js";
+import app  from "./app.js";
 
 ConnectDatabase()
 .then(()=>{
-    app.listen(process.env.PORT,()=>{
+    app.listen(process.env.PORT || 3000,()=>{
         console.log(`Server started at port ${process.env.PORT}`)
     })
 })
