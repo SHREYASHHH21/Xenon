@@ -15,7 +15,6 @@ export { asyncHandler };
 // export { asyncHandler };
 
 
-
 // const asyncHandler = (fn) = async(req,res,next) =>{
 //     try {
 //         await fn(req,res,next)
@@ -25,7 +24,6 @@ export { asyncHandler };
 //             message:err.message
 //         })
 //     }
-
 // }
 
 export default asyncHandler;
