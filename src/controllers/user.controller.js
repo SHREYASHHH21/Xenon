@@ -5,10 +5,6 @@ import uploadToCloudinary from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/apiResponse.js';
 
 const registerUser = asyncHandler(async(req,res)=>{
-  // remove password and refresh token feild from response
-  // check for user creration
-  // return res
-
   // form,json - req.body
   // url -
   // ******************************************
@@ -24,7 +20,7 @@ const registerUser = asyncHandler(async(req,res)=>{
   }
 
   // check if user already exist : username , email
-  const existedUser = User.findOne({
+  const existedUser = await User.findOne({
     $or: [{ username }, { email }],
   });
 
@@ -34,7 +30,9 @@ const registerUser = asyncHandler(async(req,res)=>{
 
   // check for users image and avatar
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.avatar[0]?.path;
+  // console.log(req.files);
+  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  // console.log(coverImageLocalPath);
 
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar image not found !!!");
@@ -54,23 +52,25 @@ const registerUser = asyncHandler(async(req,res)=>{
   // create object to update database
   const user = await User.create({
     fullname,
-    username:username.toLowerCase(),
-    avatar:avatarResponse.url,
-    coverImage:coverImageResponse.url || "",
+    username: username.toLowerCase(),
+    avatar: avatarResponse.url,
+    coverImage: coverImageResponse.url || "",
     email,
-    password
-  })
+    password,
+  });
 
-  const createdUser = await User.findById(user._id).select(" -password -refreshToken ")
+  // remove password and refresh token feild from response
+  const createdUser = await User.findById(user._id).select(
+    " -password -refreshToken "
+  );
 
-  if(!createdUser){
-    throw new ApiError(400,"something went wrong while registering user.")
+  // check for user creration
+  if (!createdUser) {
+    throw new ApiError(400, "something went wrong while registering user.");
   }
 
-  return res.status(201).json(
-    new ApiResponse(200,createdUser,"User Registered")
-  )
-
+  // return res
+  return res.status(201).json(new ApiResponse(200, createdUser, "User Registered"));
 })
 
 export {registerUser};
